@@ -6,7 +6,7 @@ First we have to understand what is each one of them and then look at what the p
 
 ## 2. Monolithic Architecture
 - Definition
-"Monolithic architecture is a traditional software development model where an entire application is built, deployed, and managed as a single, unified unit. Components are tightly coupled, sharing the same codebase and database. While simple to develop, test, and deploy initially, it lacks flexibility and scales poorly." - (Defitnition given by Google AI)
++ "Monolithic architecture is a traditional software development model where an entire application is built, deployed, and managed as a single, unified unit. Components are tightly coupled, sharing the same codebase and database. While simple to develop, test, and deploy initially, it lacks flexibility and scales poorly." - (Defitnition given by Google AI)
 
 - Pros
 1. It is easy and simple. (especially for small, simple applications.)
@@ -21,7 +21,7 @@ A lot of the top companies today use Microservice Architecture but in their earl
 
 ## 3. Microservice Architecture
 - Definition
-"Microservices architecture is an architectural style that structures an application as a collection of small, independent, and loosely coupled services. Each service focuses on a single business capability—such as user authentication, payment processing, or inventory management—and can be developed, deployed, and scaled independently." - (Defitnition given by Google AI) 
++ "Microservices architecture is an architectural style that structures an application as a collection of small, independent, and loosely coupled services. Each service focuses on a single business capability—such as user authentication, payment processing, or inventory management—and can be developed, deployed, and scaled independently." - (Defitnition given by Google AI) 
 - Pros
 1. It can push updates and deploy them independently.
 2. It fixes problems localy without affecting the rest of the services.
@@ -38,4 +38,10 @@ Our project involves the digestion of data sent from thousands of dummy sensores
 
 # 5. Which is the right choice ?
 
-A monolithic approach will not be able to handle the shear amount of throughput data so we will use a microservice architecture that will be able to deal with a huge amount of data at the same time, minimize delays and be very adaptable to change making the systam dynamic and expandable something that the monolithic approach would not allow for.
+A monolithic approach even though is capable of handling large amount of data will not be able to handle the shear amount of throughput data which will cause problems with flexibility, scalability and complexity.
+
+Given that this project will have a huge number of sensores the system must be able to handle high throughput, isolate failures and scale specific components.
+
+By taking all of this things into account plus the fact that a microservice approach would add a lot compleity into the work. I have decided to implement a limited form of a microservice architecture.
+
+This approach will lead to practical implementation and but also showcase microservice priciples of independent scalability and asynchronous communication.   
