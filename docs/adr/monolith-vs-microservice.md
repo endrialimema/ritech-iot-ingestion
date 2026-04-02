@@ -8,7 +8,7 @@ First we have to understand what is each one of them and then look at what the p
 ## 2. Monolithic Architecture
 
 - Definition
-+ "Monolithic architecture is a traditional software development model where an entire application is built, deployed, and managed as a single, unified unit. Components are tightly coupled, sharing the same codebase and database. While simple to develop, test, and deploy initially, it lacks flexibility and scales poorly." - (Defitnition given by Google AI)
+   + "Monolithic architecture is a traditional software development model where an entire application is built, deployed, and managed as a single, unified unit. Components are tightly coupled, sharing the same codebase and database. While simple to develop, test, and deploy initially, it lacks flexibility and scales poorly." - (Defitnition given by Google AI)
 
 - Pros
 1. It is easy and simple. (especially for small, simple applications.)
