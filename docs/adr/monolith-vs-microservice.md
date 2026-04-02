@@ -24,7 +24,7 @@ A lot of the top companies today use Microservice Architecture but in their earl
 ## 3. Microservice Architecture
 
 - Definition
- - "Microservices architecture is an architectural style that structures an application as a collection of small, independent, and loosely coupled services. Each service focuses on a single business capability—such as user authentication, payment processing, or inventory management—and can be developed, deployed, and scaled independently." - (Defitnition given by Google AI) 
+ + "Microservices architecture is an architectural style that structures an application as a collection of small, independent, and loosely coupled services. Each service focuses on a single business capability—such as user authentication, payment processing, or inventory management—and can be developed, deployed, and scaled independently." - (Defitnition given by Google AI) 
 - Pros
 1. It can push updates and deploy them independently.
 2. It fixes problems localy without affecting the rest of the services.
