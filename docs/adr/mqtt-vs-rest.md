@@ -1,7 +1,7 @@
 # Message Queuing Telemetry Transport (MQTT) vs Representational State Transfer (REST) Architecture
 
 ## 1. Introduction
-- 
+- MQTT and REST are to different communication approches that are used in distributed systems and both are used widely. They serve different purposes and therefore we will need to know the advantages and disadvantages of both those methods and what our projects need in order to make the right choice between the two.   
 
 ## 2. Message Queuing Telemetry Transport (MQTT)
 - Definition
@@ -38,7 +38,9 @@ A common real-life example of a REST API in action is a Weather Application on y
 
 
 ## 4. What does our project need ?
-The project need 
+- The project will involve a large number of distributed sensors sending telemetry data continously to the system. Therefore, the comunication layer should be able to handle high-frequency data transmission, support asynchronous processing, provide reliable service even under unstable network and provide decoupling. 
 
 # 5. Which is the right choice ?
-
+- Both MQTT and REST serve different purposes but that doesn`t mean we have to choose either one or the other. REST is very good for the communication between the sensors and the system. It provides a simple, standard and testable way to send data into the platform.
+- REST however is not the good at handling high-throughput, continous data. This is where MQTT is needed as its publish-subscribe model enables efficient decoupling between services and ensures better performance under load.
+- Therefore the chosen approach is to combine both. I will use REST to be used as the entry point to incoming data and MQTT for internal communication between services.
