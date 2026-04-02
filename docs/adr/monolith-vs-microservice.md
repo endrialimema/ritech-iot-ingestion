@@ -28,7 +28,7 @@ First, we have to understand what each one of them is and then look at what the 
 - Pros
 1. It can push updates and deploy them independently.
 2. It fixes problems locally without affecting the rest of the services.
-3. It allows severel developers to work on the same time without messing with each other’s work. 
+3. It allows several developers to work on the same time without messing with each other’s work. 
 - Cons
 1. It expands increasingly which requires the need for high-level orchestration, which may not be sustainable for small teams.
 2. It can be harder to trace and correct mistakes or bugs as the system gets more complex.
