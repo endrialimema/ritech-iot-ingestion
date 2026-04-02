@@ -5,7 +5,7 @@
 
 ## 2. Message Queuing Telemetry Transport (MQTT)
 - Definition
-"MQTT (Message Queuing Telemetry Transport) is a lightweight, publish-subscribe network protocol designed for low-bandwidth, high-latency, or unreliable networks, making it the standard for IoT and Machine-to-Machine (M2M) communication. It enables resource-constrained devices to send data to a central broker, which distributes it to authorized subscribers." - (Defitnition given by Google AI)
+   + "MQTT (Message Queuing Telemetry Transport) is a lightweight, publish-subscribe network protocol designed for low-bandwidth, high-latency, or unreliable networks, making it the standard for IoT and Machine-to-Machine (M2M) communication. It enables resource-constrained devices to send data to a central broker, which distributes it to authorized subscribers." - (Defitnition given by Google AI)
 
 - Pros
 1. It is efficient and requires low consumption.
