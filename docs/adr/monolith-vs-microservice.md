@@ -42,4 +42,10 @@ Our project involves the digestion of data sent from thousands of dummy sensors 
 
 # 5. Which is the right choice ?
 
-A monolithic approach will not be able to handle the shear amount of throughput data so we will use a microservice architecture that will be able to deal with a huge amount of data at the same time, minimize delays and be very adaptable to change making the systam dynamic and expandable something that the monolithic approach would not allow for.
+A monolithic approach even though is capable of handling large amount of data will not be able to handle the shear amount of throughput data which will cause problems with flexibility, scalability and complexity.
+
+Given that this project will have a huge number of sensores the system must be able to handle high throughput, isolate failures and scale specific components.
+
+By taking all of this things into account plus the fact that a microservice approach would add a lot compleity into the work. I have decided to implement a limited form of a microservice architecture.
+
+This approach will lead to practical implementation and but also showcase microservice priciples of independent scalability and asynchronous communication.   
