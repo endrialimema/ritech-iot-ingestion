@@ -38,7 +38,7 @@ Real-world examples of microservice architecture are found in nearly every major
 
 ## 4. What does our project need ?
 
-Our project involves the digestion of data sent from thousands of dummy sensors that will cause a lot of overload in the system. The dummy sensors will be sending data at all times and continuously so, and the system should be able to receive, orchestrate, and dsitribute it. It will have to deal with overload but also delays and bugs that can affect several servers at the same time. Therefore, we will need an architecture that can deal with a lot of data simultaneously, fixing problems locally without causing drop in performance.
+Our project involves the digestion of data sent from thousands of dummy sensors that will cause a lot of overload in the system. The dummy sensors will be sending data at all times and continuously so, and the system should be able to receive, orchestrate, and disitribute it. It will have to deal with overload but also delays and bugs that can affect several servers at the same time. Therefore, we will need an architecture that can deal with a lot of data simultaneously, fixing problems locally without causing drop in performance.
 
 # 5. Which is the right choice ?
 
