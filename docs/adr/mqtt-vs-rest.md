@@ -5,7 +5,7 @@
 
 ## 2. Message Queuing Telemetry Transport (MQTT)
 - Definition
-  + "MQTT (Message Queuing Telemetry Transport) is a lightweight, publish-subscribe network protocol designed for low-bandwidth, high-latency, or unreliable networks, making it the standard for IoT and Machine-to-Machine (M2M) communication. It enables resource-constrained devices to send data to a central broker, which distributes it to authorized subscribers." - (Defitnition given by Google AI)
+   + "MQTT (Message Queuing Telemetry Transport) is a lightweight, publish-subscribe network protocol designed for low-bandwidth, high-latency, or unreliable networks, making it the standard for IoT and Machine-to-Machine (M2M) communication. It enables resource-constrained devices to send data to a central broker, which distributes it to authorized subscribers." - (Defitnition given by Google AI)
 
 - Pros
 1. It is efficient and requires low consumption.
@@ -22,7 +22,7 @@ A common real-world example of MQTT in action is a Smart Home Temperature System
 
 ## 3. Representational State Transfer (REST) Architecture
 - Definition
-  +"REST (Representational State Transfer) is a software architectural style that defines a set of constraints for building distributed systems, most notably the World Wide Web and modern web APIs. It emphasizes simple, stateless, and scalable communication using standard protocols, primarily HTTP." - (Defitnition given by Google AI) 
+  + "REST (Representational State Transfer) is a software architectural style that defines a set of constraints for building distributed systems, most notably the World Wide Web and modern web APIs. It emphasizes simple, stateless, and scalable communication using standard protocols, primarily HTTP." - (Defitnition given by Google AI) 
 
 - Pros
 1. It does not store the state of of the devices therefore it can handle large volumes of request efficiently. 
