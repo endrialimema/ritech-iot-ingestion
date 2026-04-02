@@ -22,7 +22,7 @@ A common real-world example of MQTT in action is a Smart Home Temperature System
 
 ## 3. Representational State Transfer (REST) Architecture
 - Definition
-"REST (Representational State Transfer) is a software architectural style that defines a set of constraints for building distributed systems, most notably the World Wide Web and modern web APIs. It emphasizes simple, stateless, and scalable communication using standard protocols, primarily HTTP." - (Defitnition given by Google AI) 
+  +"REST (Representational State Transfer) is a software architectural style that defines a set of constraints for building distributed systems, most notably the World Wide Web and modern web APIs. It emphasizes simple, stateless, and scalable communication using standard protocols, primarily HTTP." - (Defitnition given by Google AI) 
 
 - Pros
 1. It does not store the state of of the devices therefore it can handle large volumes of request efficiently. 
