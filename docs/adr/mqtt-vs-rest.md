@@ -18,7 +18,7 @@
 3. It becomes harder and harder to manage the brokers memory as the number of connected devices increases.
 
 - Example
-A common real-world example of MQTT in action is a Smart Home Temperature System. In this scenario, multiple devices communicate through a central Broker (like Mosquitto) using specific Topics.
++ A common real-world example of MQTT in action is a Smart Home Temperature System. In this scenario, multiple devices communicate through a central Broker (like Mosquitto) using specific Topics.
 
 ## 3. Representational State Transfer (REST) Architecture
 - Definition
@@ -34,7 +34,7 @@ A common real-world example of MQTT in action is a Smart Home Temperature System
 3. It always requires a request from the client in order to sent data. 
 
 - Example
-A common real-life example of a REST API in action is a Weather Application on your smartphone. When you open the app to check the forecast, it doesn't store all the world's weather data locally; instead, it uses a REST API to "pull" exactly what it needs for your location.
++ A common real-life example of a REST API in action is a Weather Application on your smartphone. When you open the app to check the forecast, it doesn't store all the world's weather data locally; instead, it uses a REST API to "pull" exactly what it needs for your location.
 
 
 ## 4. What does our project need ?
