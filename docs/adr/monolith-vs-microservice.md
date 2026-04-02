@@ -3,6 +3,7 @@
 ## 1. Introduction
 
 The project introduces a dilemma whether which architectural approach should we use. Should we use Monolithic or Microservice Architecture ? 
+
 First, we have to understand what each one of them is and then look at what the project asks us to do in order to decide for the right method.  
 
 ## 2. Monolithic Architecture
