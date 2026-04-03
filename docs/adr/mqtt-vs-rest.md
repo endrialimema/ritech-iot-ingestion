@@ -13,7 +13,7 @@
 3. It is reliable even when the network is not stable.
 4. It provides data without the need to "ask for it".
 - Cons
-1. Tt requires a "handshake" to establish a connection, which creates overhead. 
+1. It requires a "handshake" to establish a connection, which creates overhead. 
 2. It relies on the broker to keep the entire communication system working.
 3. It becomes harder and harder to manage the brokers memory as the number of connected devices increases.
 
