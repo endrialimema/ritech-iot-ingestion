@@ -33,6 +33,3 @@ Many of the top companies today use Microservice Architecture but in their early
 3. It makes it harder and harder for consistency across different databases to be maintained.  
 - Example
 Real-world examples of micro services architecture are found in nearly every major tech giant today, including Netflix, Amazon, Uber, and Spotify. These companies transitioned from monolithic structures to micro services to solve critical bottlenecks in scalability, deployment speed, and reliability as their user bases grew. 
-
-## 4. What does our project need?
-Our project involves the digestion of data sent from thousands of dummy sensors that will cause a lot of overload in the system. The dummy sensors will be sending data at all times and continuously so, and the system should be able to receive, orchestrate, and distribute it. It will have to deal with overload but also delays and bugs that can affect several servers at the same time. Therefore, we will need an architecture that can deal with many data simultaneously, fixing problems locally without causing drop in performance.
