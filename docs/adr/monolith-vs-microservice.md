@@ -17,7 +17,7 @@ First, we have to understand what each one of them is and then look at what the 
 2. It is very bad at adapting to change. You have to redo the application, which is costly, and time consuming.
 3. It becomes increasingly complex with each new feature added which also lead to the system slowing down and underperforming.
 - Example
-Many of the top companies today use Microservice Architecture but in their early startups, they used monolithic ones in order to launch fast and gain popularity. It also helped that they were small companies back then and that is why today small startup companies also use Monolithic Architecture for sake of simplicity.
+  * Many of the top companies today use Microservice Architecture but in their early startups, they used monolithic ones in order to launch fast and gain popularity. It also helped that they were small companies back then and that is why today small startup companies also use Monolithic Architecture for sake of simplicity.
 
 ## 3. Microservice Architecture
 - Definition
@@ -32,4 +32,4 @@ Many of the top companies today use Microservice Architecture but in their early
 2. It can be harder to trace and correct mistakes or bugs as the system gets more complex.
 3. It makes it harder and harder for consistency across different databases to be maintained.  
 - Example
-Real-world examples of micro services architecture are found in nearly every major tech giant today, including Netflix, Amazon, Uber, and Spotify. These companies transitioned from monolithic structures to micro services to solve critical bottlenecks in scalability, deployment speed, and reliability as their user bases grew. 
+  * Real-world examples of micro services architecture are found in nearly every major tech giant today, including Netflix, Amazon, Uber, and Spotify. These companies transitioned from monolithic structures to micro services to solve critical bottlenecks in scalability, deployment speed, and reliability as their user bases grew. 
