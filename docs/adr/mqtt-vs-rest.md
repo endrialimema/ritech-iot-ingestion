@@ -35,12 +35,3 @@
 
 - Example
   + A common real-life example of a REST API in action is a Weather Application on your smartphone. When you open the app to check the forecast, it does not store the entire the world's weather data locally; instead, it uses a REST API to "pull" exactly what it needs for your location.
-
-
-## 4. What does our project need ?
-- The project will involve a large number of distributed sensors sending telemetry data continuously to the system. Therefore, the communication layer should be able to handle high-frequency data transmission, support asynchronous processing, provide reliable service even under unstable network and provide decoupling. 
-
-# 5. Which is the right choice ?
-- Both MQTT and REST serve different purposes but that doesn`t mean we have to choose either one or the other. REST is very good for the communication between the sensors and the system. It provides a simple, standard and testable way to send data into the platform.
-- REST however is not the good at handling high-throughput, continuous data. This is where MQTT is needed as its own publish-subscribe model enables efficient decoupling between services and ensures better performance under load.
-- Therefore, the chosen approach is to combine both. I will use REST as the entry point to incoming data and MQTT for internal communication between services.
