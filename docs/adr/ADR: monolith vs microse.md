@@ -1,4 +1,4 @@
-# ADR: Adopt Microservice Architecture vs Monolith
+# ADR: Adopt   Monolith vs Microservice Architecture
 
 ## Status
 Proposed
