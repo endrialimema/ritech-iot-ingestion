@@ -1,0 +1,34 @@
+---
+config:
+  layout: elk
+  look: handDrawn
+  theme: default
+---
+flowchart TB
+ subgraph subGraph0["Edge Sensors"]
+        A["A"]
+  end
+ subgraph Ingestion["Ingestion Layer"]
+        B["B"]
+        C["Python API Gateway"]
+  end
+ subgraph subGraph2["Buffer MongoDB"]
+        D["D"]
+  end
+ subgraph Engine["Processing Layer"]
+        E["C++ Processing Engine"]
+  end
+ subgraph subGraph4["Persistence Postgres"]
+        F["F"]
+  end
+    A -- "1. Publishes Telemetry" --> B
+    B -- "2. Subscribes & Routes" --> C
+    C -- "3. Fast Schema-less Insert" --> D
+    E -- "4. Polls Raw Data" --> D
+    E <-- "5. Reads Metadata & Thresholds" --> F
+    E -- "6. Batch Inserts Normalized Data" --> F
+
+     D:::database
+     F:::database
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px
+    classDef database fill:#e1f5fe,stroke:#333,stroke-width:2px
