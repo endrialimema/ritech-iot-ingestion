@@ -1,6 +1,6 @@
 ---
 config:
-  layout: dagre
+  layout: elk
   look: neo
 ---
 erDiagram
@@ -13,10 +13,10 @@ erDiagram
 
 	alert_thresholds {
 		int threshold_id PK ""  
-		string device_id FK ""
-        int sensor_type_id FK
-        float min_critical
-        float max_critical  
+		string device_id FK ""  
+		int sensor_type_id FK ""  
+		float min_critical  ""  
+		float max_critical  ""  
 	}
 
 	devices {
@@ -39,11 +39,12 @@ erDiagram
 		string region  ""  
 	}
 
-	facilities||--|{devices:"  "
-	devices||--|{telemetry_data:"  "
-	devices||--|{alert_thresholds:"  "
-	telemetry_data}|--||sensor_types:"  "
+	facilities||--|{devices:"has"
+	devices||--|{telemetry_data:"provides"
+	sensor_types||--|{telemetry_data:"measures"
+	sensor_types||--|{alert_thresholds:"defines thresholds for"
+	devices||--|{alert_thresholds:"has thresholds set on"
+	alert_thresholds||--|{telemetry_data:"evaluates readings"
+	devices||--|{sensor_types:"has"
 
 
-	
-	
