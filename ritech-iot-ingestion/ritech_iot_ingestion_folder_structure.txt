@@ -1,0 +1,14 @@
+ritech-iot-ingestion/
+│
+│----docker_compose.yaml
+│----er_diagram.md
+│------database/
+│         │
+│         │-----sql-migrations/
+│         │           │
+│         │           │----V1_initial_shcema.sql
+│         │----nosql-schemas/
+│               │
+│               │----raw_payload_schema.json
+│-----docs/
+│-----architecture/

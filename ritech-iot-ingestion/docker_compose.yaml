@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  postgres-analytics:
+    image: postgres:15
+    container_name: ritech_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: endri_admin
+      POSTGRES_PASSWORD: secure_password_123
+      POSTGRES_DB: iot_telemetry
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persists the database data
+      - pgdata:/var/lib/postgresql/data
+      # Maps the local schema file into the container to auto-execute on initial startup
+      - ./database/sql-migrations/V1_initial_schema.sql:/docker-entrypoint-initdb.d/V1__initial_schema.sql
+    networks:
+      - backend
+
+  mongo-raw-ingestion:
+    image: mongo:6.0
+    container_name: ritech_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: endri_admin
+      MONGO_INITDB_ROOT_PASSWORD: secure_password_123
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+    volumes:
+      - mongodata:/data/db
+
+  telemetry-api:
+    image: telemetry-api:latest
+    container_name: telemetry-app
+    pull_policy: never
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres-analytics
+      - mongo-raw-ingestion
+    networks:
+      - backend
+
+volumes:
+  pgdata:
+  mongodata:
+
+networks:
+  backend:

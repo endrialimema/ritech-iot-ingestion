@@ -1,0 +1,23 @@
+app/
+ ├── main.py
+ ├── api/
+ │    ├── routes/
+ │    │     ├── telemetry.py
+ │    │     └── sensor.py
+ │    └── router.py
+ │    
+ ├── core/ 
+ │    │
+ │    ├── middleware.py
+ │    └── rate_limiter.py
+ │
+ ├── models/
+ │    ├── telemetry.py
+ │    └── sensor.py
+ ├── schemas/
+ │    ├── telemetry.py
+ │    └── sensor.py
+ ├── db/
+ │    └── mongodb.py
+ └── services/
+      └── telemetry_service.py
