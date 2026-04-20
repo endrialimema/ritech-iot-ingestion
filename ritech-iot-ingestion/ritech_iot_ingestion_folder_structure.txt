@@ -10,5 +10,8 @@ ritech-iot-ingestion/
 │         │----nosql-schemas/
 │               │
 │               │----raw_payload_schema.json
+│-----app/
+│-----Dockerfile
+│-----requirements.txt
 │-----docs/
 │-----architecture/
