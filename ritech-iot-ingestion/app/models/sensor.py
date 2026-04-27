@@ -3,7 +3,7 @@ from typing import Optional
 
 
 class Sensor(BaseModel):
-    sensor_id: str
+    device_id: str
     name: Optional[str] = None
     location: Optional[str] = None
     type: Optional[str] = None
