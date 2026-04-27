@@ -1,9 +1,10 @@
 version: '3.8'
+
 services:
   postgres-analytics:
     image: postgres:15
     container_name: ritech_postgres
-    restart: unless-stopped
+    restart: on-failure
     environment:
       POSTGRES_USER: endri_admin
       POSTGRES_PASSWORD: secure_password_123
@@ -11,37 +12,63 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      # Persists the database data
       - pgdata:/var/lib/postgresql/data
-      # Maps the local schema file into the container to auto-execute on initial startup
       - ./database/sql-migrations/V1_initial_schema.sql:/docker-entrypoint-initdb.d/V1__initial_schema.sql
     networks:
       - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U endri_admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongo-raw-ingestion:
     image: mongo:6.0
     container_name: ritech_mongo
-    restart: unless-stopped
+    restart: on-failure
     environment:
       MONGO_INITDB_ROOT_USERNAME: endri_admin
       MONGO_INITDB_ROOT_PASSWORD: secure_password_123
     ports:
       - "27017:27017"
-    networks:
-      - backend
     volumes:
       - mongodata:/data/db
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  telemetry-api:
-    image: telemetry-api:latest
-    container_name: telemetry-app
-    pull_policy: never
+  mosquitto-broker:
+    image: eclipse-mosquitto
+    container_name: ritech_mosquitto
     restart: unless-stopped
     ports:
+      - "1883:1883"
+    networks:
+      - backend
+
+  telemetry-api:
+    build: .
+    container_name: telemetry-app
+    restart: on-failure
+    ports:
       - "8000:8000"
+    volumes:
+    - ./app:/app/app
     depends_on:
-      - postgres-analytics
-      - mongo-raw-ingestion
+      mongo-raw-ingestion:
+        condition: service_healthy
+      postgres-analytics:
+        condition: service_healthy
+      mosquitto-broker:
+        condition: service_started
+    environment:
+      PYTHONPATH: /app
+      MONGO_URL: mongodb://endri_admin:secure_password_123@mongo-raw-ingestion:27017
+      POSTGRES_URL: postgresql://endri_admin:secure_password_123@postgres-analytics:5432/iot_telemetry
     networks:
       - backend
 
