@@ -8,6 +8,7 @@ app/
  │    
  ├── core/ 
  │    │
+ │    ├── fsm.py
  │    ├── middleware.py
  │    └── rate_limiter.py
  │
