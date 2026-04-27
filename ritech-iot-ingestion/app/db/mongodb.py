@@ -1,7 +1,31 @@
 from motor.motor_asyncio import AsyncIOMotorClient
+import os
+import time
 
-MONGO_URL = "mongodb://endri_admin:secure_password_123@localhost:27017/?authSource=admin"
+def get_db():
+    mongo_url = os.getenv(
+        "MONGO_URL",
+        "mongodb://mongo-raw-ingestion:27017/admin"
+    )
 
-client = AsyncIOMotorClient(MONGO_URL)
+    for _ in range(10):
+        try:
+            print("MONGO URL:", mongo_url)
 
-db = client["telemetry_db"]
+            client = AsyncIOMotorClient(
+                mongo_url,
+                serverSelectionTimeoutMS=2000
+            )
+
+            client.server_info()  # force connection check
+
+            print("Mongo connected")
+            return client["telemetry_db"]
+
+        except Exception as e:
+            print("Mongo not ready, retrying...", e)
+            time.sleep(2)
+
+    raise Exception("Failed to connect to MongoDB after 10 retries")
+
+db = get_db()
