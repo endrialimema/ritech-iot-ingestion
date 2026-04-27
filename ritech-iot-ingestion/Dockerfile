@@ -17,7 +17,7 @@ COPY --from=builder /root/.local /root/.local
 
 ENV PATH=/root/.local/bin:$PATH
 
-COPY app ./app
+COPY app/* .
 
 EXPOSE 8000
 
