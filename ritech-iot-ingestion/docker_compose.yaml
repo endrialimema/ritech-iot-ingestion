@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  postgres-analytics:
+    image: postgres:15
+    container_name: ritech_postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: endri_admin
+      POSTGRES_PASSWORD: secure_password_123
+      POSTGRES_DB: iot_telemetry
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/sql-migrations/V1_initial_schema.sql:/docker-entrypoint-initdb.d/V1__initial_schema.sql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U endri_admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo-raw-ingestion:
+    image: mongo:6.0
+    container_name: ritech_mongo
+    restart: on-failure
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: endri_admin
+      MONGO_INITDB_ROOT_PASSWORD: secure_password_123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mosquitto-broker:
+    image: eclipse-mosquitto
+    container_name: ritech_mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    networks:
+      - backend
+
+  telemetry-api:
+    build: .
+    container_name: ritech_telemetry
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    volumes:
+    - ./app:/app/app
+    depends_on:
+      mongo-raw-ingestion:
+        condition: service_healthy
+      postgres-analytics:
+        condition: service_healthy
+      mosquitto-broker:
+        condition: service_started
+    environment:
+      PYTHONPATH: /app
+      MONGO_URL: mongodb://endri_admin:secure_password_123@mongo-raw-ingestion:27017
+      POSTGRES_URL: postgresql://endri_admin:secure_password_123@postgres-analytics:5432/iot_telemetry
+    networks:
+      - backend
+      
+  mqtt-subscriber:
+    build: .
+    container_name: ritech_subscriber
+    command: python app/mqtt_subscriber.py   
+    depends_on:
+    - mosquitto-broker
+    - mongo-raw-ingestion
+    environment:
+     PYTHONPATH: /app
+     MONGO_URL: mongodb://endri_admin:secure_password_123@mongo-raw-ingestion:27017
+    networks:
+    - backend
+
+
+volumes:
+  pgdata:
+  mongodata:
+
+networks:
+  backend:

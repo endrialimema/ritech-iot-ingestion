@@ -1,0 +1,28 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["device_id", "arrival_timestamp", "protocol", "raw_payload", "validation_status"],
+    "properties": {
+      "device_id": {
+        "bsonType": "string",
+        "description": "Must be a string and is required to map back to the SQL device metadata."
+      },
+      "arrival_timestamp": {
+        "bsonType": "date",
+        "description": "Must be a date and is required for initial time-series sorting."
+      },
+      "protocol": {
+        "enum": ["TCP", "UDP", "HTTP", "HTTPS","MQTT", "CoAP"],
+        "description": "Identifies the network protocol used for ingestion."
+      },
+      "raw_payload": {
+        "bsonType": "object",
+        "description": "Flexible sub-document. Can hold any unstructured or varied sensor telemetry (temperature, GPS, etc.) without rigid column rules."
+      },
+      "validation_status": {
+        "enum": ["pending", "validated", "failed"],
+        "description": "State machine flag used by the C++ processing engine to track what data has been pushed to PostgreSQL."
+      }
+    }
+  }
+}
