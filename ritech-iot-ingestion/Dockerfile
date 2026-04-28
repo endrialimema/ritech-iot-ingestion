@@ -5,7 +5,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 RUN pip install --upgrade pip && \
-    pip install --user -r requirements.txt
+    pip install -r requirements.txt
 
 COPY app ./app
 
@@ -13,11 +13,9 @@ FROM python:3.11-slim AS runtime
 
 WORKDIR /app
 
-COPY --from=builder /root/.local /root/.local
+COPY --from=builder /usr/local /usr/local
 
-ENV PATH=/root/.local/bin:$PATH
-
-COPY app/* .
+COPY app ./app
 
 EXPOSE 8000
 
