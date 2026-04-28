@@ -2,13 +2,14 @@ from fastapi import APIRouter
 
 from app.schemas.sensor import SensorCreate, SensorResponse
 
-router = APIRouter(prefix="/sensors", tags=["Sensors"])
+print("SENSOR ROUTE LOADED")
 
+router = APIRouter(tags=["Sensors"])
 
 @router.post("/", response_model=SensorResponse)
 def create_sensor(sensor: SensorCreate):
     return SensorResponse(
-        sensor_id=sensor.sensor_id,
+        device_id=sensor.device_id,
         name=sensor.name,
         location=sensor.location,
         type=sensor.type,
