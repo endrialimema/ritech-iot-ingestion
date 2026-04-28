@@ -52,7 +52,7 @@ services:
 
   telemetry-api:
     build: .
-    container_name: telemetry-app
+    container_name: ritech_telemetry
     restart: on-failure
     ports:
       - "8000:8000"
@@ -71,6 +71,20 @@ services:
       POSTGRES_URL: postgresql://endri_admin:secure_password_123@postgres-analytics:5432/iot_telemetry
     networks:
       - backend
+      
+  mqtt-subscriber:
+    build: .
+    container_name: ritech_subscriber
+    command: python app/mqtt_subscriber.py   
+    depends_on:
+    - mosquitto-broker
+    - mongo-raw-ingestion
+    environment:
+     PYTHONPATH: /app
+     MONGO_URL: mongodb://endri_admin:secure_password_123@mongo-raw-ingestion:27017
+    networks:
+    - backend
+
 
 volumes:
   pgdata:
