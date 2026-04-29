@@ -1,108 +1,48 @@
 import asyncio
-import re
-import logging
-from aiomqtt import Client
-from core.fsm import TelemetryFSM
-from db.mongodb import db
+import aiomqtt
+import os
+from datetime import datetime, timezone
+from app.db.mongodb import db
+from app.core.fsm import TelemetryFSM
 
-print("SUBSCRIBER STARTED")
+MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto-broker")
+MQTT_TOPIC = "telemetry/#"
 
-TOPIC_REGEX = r"^telemetry\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$"
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("mqtt")
-
-BROKER = "mosquitto-broker"  # can be changed later
-PORT = 1883
-FLUSH_INTERVAL = 5
-BATCH_SIZE = 10
-
-queue = asyncio.Queue()
-dlq = asyncio.Queue()
-
-async def mqtt_worker():
-
-    print("MQTT WORKER STARTED")
-
+async def listen():
+    # Instantiate FSM ONCE outside the loop to prevent memory thrashing
+    fsm = TelemetryFSM()
+    
     while True:
         try:
-            async with Client(BROKER, PORT) as client:
-                logger.info("MQTT CONNECTED")
-                await client.subscribe("telemetry/+/+/+")
-                logger.info("SUBSCRIBED")
-
-                async for msg in client.messages:
-                    topic = str(msg.topic)
+            async with aiomqtt.Client(MQTT_BROKER) as client:
+                await client.subscribe(MQTT_TOPIC)
+                
+                async for message in client.messages:
+                    # Reset FSM state for each new message
+                    fsm.state = "RECEIVED"
+                    payload_raw = message.payload.decode()
                     
-                    if not re.match(TOPIC_REGEX, topic):
-                        logger.warning("Invalid topic: %s", topic)
-                        continue
-
-                    fsm = TelemetryFSM()
-
-                    logger.info("Processing message from topic: %s", topic)
-                    payload = fsm.parse(msg.payload.decode())
-                    if payload is None:
-                        logger.error("Invalid payload format")
-                        await dlq.put(msg.payload.decode())
-                        continue
-
-                    topic_parts = topic.split("/")
-                    if len(topic_parts) < 3:
-                        logger.warning("Malformed topic: %s", topic)
-                        continue
-                    payload["device_id"] = topic_parts[2]
-                    if not fsm.validate(payload):
-                        logger.warning("Rejected: %s", payload)
-                        await dlq.put(payload)
-                        continue
-                    if not fsm.accept():
-                        logger.info("Not accepted: %s", payload)
-                        await dlq.put(payload)
-                        continue
-                    data = {
-                        "device_id": str(payload["device_id"]),
-                        "value": float(payload["value"])
-                    }
-                    await queue.put(data)
-                    logger.info("Queued: %s", data)
-        except Exception as e:
-            logger.error(f"MQTT DISCONNECTED → reconnecting in 3s: {e}")
-            await asyncio.sleep(3)  # wait before retrying
-
-async def db_writer():
-    while True:
-        await asyncio.sleep(FLUSH_INTERVAL)
-
-        batch = []
-
-        while not queue.empty() and len(batch) < BATCH_SIZE:
-            batch.append(await queue.get())
-
-        if not batch:
-            continue
-
-        try:
-            result = await db.telemetry.insert_many(batch)
-            logger.info(f"BATCH INSERTED: {len(batch)}")
-
-        except Exception as e:
-            logger.error("DB insert failed: %s", e)
-
-async def dlq_worker():
-    while True:
-        item = await dlq.get()
-        logger.error(f"DLQ STORE: {item}")
-        
-async def main():
-    print("MQTT MAIN ENTERED")
-    try:
-        await asyncio.gather(
-            mqtt_worker(),
-            db_writer(),
-            dlq_worker()
-        )
-    except Exception as e:
-        logger.error(f"MQTT MAIN CRASHED: {e}")
+                    parsed_data = fsm.parse(payload_raw)
+                    
+                    if fsm.validate(parsed_data) and fsm.accept():
+                        # Construct document strictly according to raw_payload_schema.json
+                        document = {
+                            "device_id": str(parsed_data["device_id"]),
+                            "arrival_timestamp": datetime.now(timezone.utc),
+                            "protocol": "MQTT",
+                            "raw_payload": {
+                                "value": float(parsed_data["value"])
+                            },
+                            "validation_status": "pending"
+                        }
+                        
+                        await db.telemetry.insert_one(document)
+                    else:
+                        # Dead Letter Queue logic (log or route to DLQ collection)
+                        pass
+                        
+        except aiomqtt.MqttError:
+            await asyncio.sleep(2)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(listen())
