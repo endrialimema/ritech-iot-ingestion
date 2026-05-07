@@ -4,3 +4,4 @@ motor
 pydantic
 aiomqtt
 python-dotenv
+yappi
