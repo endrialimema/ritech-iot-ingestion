@@ -52,7 +52,7 @@ services:
     build: .
     container_name: telemetry-subscriber
     restart: on-failure
-    command: ["python", "app/mqtt_subscriber.py"]
+    command: ["python", "-u", "app/mqtt_subscriber.py"]
     volumes:
       - ./app:/app/app
     depends_on:
@@ -67,6 +67,18 @@ services:
       MQTT_BROKER: mosquitto-broker
     networks:
       - backend
+  
+  publisher:
+    build:
+      context: ./publisher
+    container_name: ritech_publisher
+    restart: on-failure
+    depends_on:
+     - mosquitto-broker
+    environment:
+      MQTT_BROKER: mosquitto-broker
+    networks:
+    - backend
 
 volumes:
   pgdata:
