@@ -4,7 +4,7 @@ A **Docker-native IoT telemetry ingestion pipeline** that processes real-time se
 
 ---
 
-## 🚀 System Overview
+## System Overview
 
 This project simulates a scalable IoT ingestion backend with the following pipeline:
 
@@ -14,7 +14,7 @@ The system is fully containerized using Docker Compose and designed for high-thr
 
 ---
 
-## 🧱 Architecture
+## Architecture
 
 ### Core Components
 
@@ -35,7 +35,7 @@ The system is fully containerized using Docker Compose and designed for high-thr
 
 ---
 
-## ⚙️ Technologies Used
+## Technologies Used
 
 - Python 3.11
 - C++17
@@ -49,7 +49,7 @@ The system is fully containerized using Docker Compose and designed for high-thr
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 ``` text
 ritech-iot-ingestion/
 │
@@ -93,29 +93,29 @@ ritech-iot-ingestion/
 ```
 ---
 
-## ⚡ Key Features
+## Key Features
 
-### 🔄 Real-Time Streaming
+### Real-Time Streaming
 - MQTT-based asynchronous ingestion pipeline
 - High-frequency message handling
 
-### 🧠 FSM-Based Processing
+### FSM-Based Processing
 - Structured validation of telemetry payloads
 - Extensible factory pattern for sensor types
 
-### ⚙️ C++ Performance Optimization
+### C++ Performance Optimization
 - Critical normalization logic moved from Python → C++
 - pybind11 bindings for seamless integration
 - Reduces Python GIL bottlenecks under load
 
-### 🐳 Fully Docker-Native
+### Fully Docker-Native
 - All services containerized
 - Reproducible builds using Docker Compose
 - Isolated environments for each service
 
 ---
 
-## 📊 Performance Testing
+## Performance Testing
 
 The system was stress-tested under simulated high-load conditions:
 
@@ -131,13 +131,9 @@ The system was stress-tested under simulated high-load conditions:
 
 ---
 
-## 🧪 Running the System
+## Running the System
 
 ### 1. Build and start all services
-
-## 🧪 Running the System
-
-### 1️⃣ Build and Start All Services
 
 ```bash
 docker compose up --build
@@ -157,7 +153,7 @@ This command:
 
 ---
 
-### 2️⃣ Verify Running Containers
+### 2. Verify Running Containers
 
 ```bash
 docker ps
@@ -175,7 +171,7 @@ Expected services:
 
 ---
 
-### 3️⃣ Monitor Subscriber Logs
+### 3️. Monitor Subscriber Logs
 
 ```bash
 docker logs -f telemetry-subscriber
@@ -198,7 +194,7 @@ This confirms:
 
 ---
 
-### 4️⃣ Verify MongoDB Inserts
+### 4️. Verify MongoDB Inserts
 
 ```bash
 docker exec -it ritech_mongo mongosh
@@ -215,7 +211,7 @@ This verifies successful telemetry ingestion.
 
 ---
 
-### 5️⃣ Run Stress Tests
+### 5️. Run Stress Tests
 
 The publisher service can simulate high-throughput telemetry loads.
 
@@ -235,7 +231,7 @@ yappi
 
 ---
 
-### 6️⃣ Stop the System
+### 6️. Stop the System
 
 ```bash
 docker compose down
@@ -249,7 +245,7 @@ docker compose down -v
 
 ---
 
-## 🐳 Docker-Native Execution
+## Docker-Native Execution
 
 The system is designed to run entirely inside Docker containers.
 
