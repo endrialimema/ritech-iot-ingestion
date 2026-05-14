@@ -2,3 +2,7 @@ fastapi
 uvicorn
 motor
 pydantic
+aiomqtt
+python-dotenv
+yappi
+pybind11
