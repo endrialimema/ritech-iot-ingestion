@@ -1,0 +1,25 @@
+ritech-iot-ingestion/
+│                   
+├── database/
+│   ├── sql-migrations 
+│   │        ├─ V1_initial_shcema.sql
+│   │        └─ V2_create_partitions.sql
+│   └── nosql-schemas/      
+│        └── raw_payload_schema.json     
+│           
+│  
+├── publisher/              
+│   ├── Dockerfile
+│   ├── publisher.py
+│   └── requirements.txt            
+│  
+├── app/   
+├── docker-compose.yml       
+├── Dockerfile               
+├── requirements.txt      
+├── .env
+│
+│
+│
+├── docs/
+├── architecture/      

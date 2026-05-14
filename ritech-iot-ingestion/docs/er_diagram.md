@@ -1,0 +1,40 @@
+erDiagram
+    facilities ||--o{ devices : "houses"
+    devices ||--o{ telemetry_data : "generates"
+    devices ||--o{ alert_thresholds : "has"
+    sensor_types ||--o{ telemetry_data : "measured_in"
+    sensor_types ||--o{ alert_thresholds : "defines_limits_for"
+
+    facilities {
+        UUID facility_id PK
+        VARCHAR name
+        VARCHAR region
+    }
+    
+    devices {
+        VARCHAR device_id PK
+        UUID facility_id FK
+        VARCHAR firmware_version
+        VARCHAR status
+    }
+    
+    sensor_types {
+        SERIAL sensor_type_id PK
+        VARCHAR sensor_name
+        VARCHAR unit_of_measurement
+    }
+    
+    alert_thresholds {
+        SERIAL threshold_id PK
+        VARCHAR device_id FK
+        INT sensor_type_id FK
+        FLOAT min_critical
+        FLOAT max_critical
+    }
+    
+    telemetry_data {
+        TIMESTAMP ts PK
+        VARCHAR device_id FK
+        INT sensor_type_id FK
+        FLOAT reading_value
+    }

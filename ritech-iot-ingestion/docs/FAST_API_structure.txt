@@ -1,0 +1,37 @@
+app/
+ ├── main.py
+ ├── api/
+ │    ├── routes/
+ │    │     ├── telemetry.py
+ │    │     └── sensor.py
+ │    └── router.py
+ │    
+ ├── core/ 
+ │    │
+ │    ├── fsm.py
+ │    ├── middleware.py
+ │    ├── rate_limiter.py
+ │    │
+ │    ├────── payloads/
+ │    │       ├── base.py
+ │    │       ├── factory.py
+ │    │       ├── registry.py
+ │    │       ├── temperature.py
+ │    │       └── vibration.py 
+ │    │
+ │    ├──── cpp_normalizer       
+ │            ├── bindings.cpp
+ │            ├── cpp_normalizer.cp311-win_amd64.pyd  
+ │            ├── normalizer.cpp
+ │            ├── setup.py 
+ │
+ ├── models/
+ │    ├── telemetry.py
+ │    └── sensor.py
+ ├── schemas/
+ │    ├── telemetry.py
+ │    └── sensor.py
+ ├── db/
+ │    └── mongodb.py
+ └── services/
+      └── telemetry_service.py
