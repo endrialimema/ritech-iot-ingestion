@@ -1,108 +1,82 @@
 import asyncio
-import re
-import logging
-from aiomqtt import Client
-from core.fsm import TelemetryFSM
-from db.mongodb import db
+import aiomqtt
+import os
+import sys
+import yappi
+from datetime import datetime, timezone
+from app.db.mongodb import db
+from app.core.fsm import TelemetryFSM
 
-print("SUBSCRIBER STARTED")
+MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto-broker")
+MQTT_TOPIC = "telemetry/#"
 
-TOPIC_REGEX = r"^telemetry\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$"
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("mqtt")
+sys.path.append(os.path.abspath("cpp_normalizer"))  # Add C++ module path to sys.path
 
-BROKER = "mosquitto-broker"  # can be changed later
-PORT = 1883
-FLUSH_INTERVAL = 5
-BATCH_SIZE = 10
+async def listen():
+    # Instantiate FSM ONCE outside the loop to prevent memory thrashing
 
-queue = asyncio.Queue()
-dlq = asyncio.Queue()
-
-async def mqtt_worker():
-
-    print("MQTT WORKER STARTED")
-
-    while True:
-        try:
-            async with Client(BROKER, PORT) as client:
-                logger.info("MQTT CONNECTED")
-                await client.subscribe("telemetry/+/+/+")
-                logger.info("SUBSCRIBED")
-
-                async for msg in client.messages:
-                    topic = str(msg.topic)
-                    
-                    if not re.match(TOPIC_REGEX, topic):
-                        logger.warning("Invalid topic: %s", topic)
-                        continue
-
-                    fsm = TelemetryFSM()
-
-                    logger.info("Processing message from topic: %s", topic)
-                    payload = fsm.parse(msg.payload.decode())
-                    if payload is None:
-                        logger.error("Invalid payload format")
-                        await dlq.put(msg.payload.decode())
-                        continue
-
-                    topic_parts = topic.split("/")
-                    if len(topic_parts) < 3:
-                        logger.warning("Malformed topic: %s", topic)
-                        continue
-                    payload["device_id"] = topic_parts[2]
-                    if not fsm.validate(payload):
-                        logger.warning("Rejected: %s", payload)
-                        await dlq.put(payload)
-                        continue
-                    if not fsm.accept():
-                        logger.info("Not accepted: %s", payload)
-                        await dlq.put(payload)
-                        continue
-                    data = {
-                        "device_id": str(payload["device_id"]),
-                        "value": float(payload["value"])
-                    }
-                    await queue.put(data)
-                    logger.info("Queued: %s", data)
-        except Exception as e:
-            logger.error(f"MQTT DISCONNECTED → reconnecting in 3s: {e}")
-            await asyncio.sleep(3)  # wait before retrying
-
-async def db_writer():
-    while True:
-        await asyncio.sleep(FLUSH_INTERVAL)
-
-        batch = []
-
-        while not queue.empty() and len(batch) < BATCH_SIZE:
-            batch.append(await queue.get())
-
-        if not batch:
-            continue
-
-        try:
-            result = await db.telemetry.insert_many(batch)
-            logger.info(f"BATCH INSERTED: {len(batch)}")
-
-        except Exception as e:
-            logger.error("DB insert failed: %s", e)
-
-async def dlq_worker():
-    while True:
-        item = await dlq.get()
-        logger.error(f"DLQ STORE: {item}")
+    print("Subscriber started")
+    fsm = TelemetryFSM()
+    yappi.start()
+    start_time = datetime.now(timezone.utc)    
+    message_count = 0
         
-async def main():
-    print("MQTT MAIN ENTERED")
+    print("Waiting for MQTT messages...")
     try:
-        await asyncio.gather(
-            mqtt_worker(),
-            db_writer(),
-            dlq_worker()
-        )
-    except Exception as e:
-        logger.error(f"MQTT MAIN CRASHED: {e}")
+        async with aiomqtt.Client(MQTT_BROKER) as client:
+            print("Connecting to MQTT broker...")
+            
+            await client.subscribe(MQTT_TOPIC)
+
+            print("Connected and subscribed")
+
+            async for message in client.messages:
+                        
+                message_count += 1
+                payload_raw = message.payload.decode()
+
+                print("Message received:", payload_raw)
+
+                obj = fsm.process(payload_raw)
+                if not obj:
+                            continue
+
+                document = {
+                            "device_id": obj.get_device_id(),
+                            "arrival_timestamp": datetime.now(timezone.utc),
+                            "protocol": "MQTT",
+                            "raw_payload": {
+                            "value type": obj.get_sensor_type(),
+                            "value": obj.get_value(),
+                            "normalized": obj.normalize()
+                            },
+                            "validation_status": "accepted"
+                            }
+
+                
+                await db.telemetry.insert_one(document)      
+
+                print("Message_Count: ", message_count)                
+                if message_count >= 500:
+                    return
+    
+    except aiomqtt.MqttError:
+        print("MQTT connection error")
+        import traceback
+        traceback.print_exc()
+
+    except Exception:
+        import traceback                     
+        traceback.print_exc()
+
+    finally:
+        yappi.stop()
+        stats = yappi.get_func_stats()
+        stats.sort("tsub")
+        print("\n===== CPU PROFILING RESULTS =====")
+        stats.print_top(20)
+    
+    
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(listen())
