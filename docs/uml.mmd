@@ -1,0 +1,39 @@
+classDiagram
+
+class Telemetry {
+    +string device_id
+    +float value
+    +datetime timestamp
+    +string protocol
+    +validate()
+    +to_document()
+}
+
+class TelemetryFSM {
+    +string state
+    +parse(payload_raw)
+    +validate(data)
+    +accept()
+}
+
+class MQTTSubscriber {
+    +string broker_url
+    +string topic
+    +listen()
+    +connect()
+    +handle_message(message)
+}
+
+class TelemetryRepository {
+    +insert(document)
+    +find(query)
+    +update_status(id, status)
+}
+
+class MongoDB
+
+MQTTSubscriber --> TelemetryFSM : uses
+MQTTSubscriber --> Telemetry : creates
+MQTTSubscriber --> TelemetryRepository : writes
+TelemetryRepository --> MongoDB : stores
+Telemetry --> TelemetryRepository : mapped to
