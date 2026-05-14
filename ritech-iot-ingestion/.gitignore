@@ -1,0 +1,21 @@
+# environment files
+.env
+.env.*
+
+# python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# build artifacts
+build/
+dist/
+*.so
+*.pyd
+
+# docker
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
