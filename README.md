@@ -203,7 +203,7 @@ docker exec -it ritech_mongo mongosh
 Inside Mongo shell:
 
 ```javascript
-use telemetry
+use telemetry_db
 db.telemetry.find().pretty()
 ```
 

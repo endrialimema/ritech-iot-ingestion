@@ -33,4 +33,4 @@ COPY publisher.py .
 RUN useradd -m appuser
 USER appuser
 
-CMD ["python", "-u","-m", "publisher.py"]
+CMD ["python", "-u", "publisher.py"]

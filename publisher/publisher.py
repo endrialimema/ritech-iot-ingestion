@@ -20,7 +20,7 @@ for i in range(10000):
 
 start_time = time.time()
 i = 0
-while time.time() - start_time < 60:
+while time.time() - start_time < 30:
     sensor = random.choice(sensor_types)
 
     if sensor == "temperature":

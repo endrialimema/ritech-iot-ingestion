@@ -1,6 +1,7 @@
 # environment files
 .env
 .env.*
+!.env.example
 
 # python cache
 __pycache__/

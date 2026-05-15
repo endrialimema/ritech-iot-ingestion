@@ -1,7 +1,6 @@
 import asyncio
 import aiomqtt
 import os
-import sys
 import yappi
 from datetime import datetime, timezone
 from app.db.mongodb import db
@@ -9,8 +8,6 @@ from app.core.fsm import TelemetryFSM
 
 MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto-broker")
 MQTT_TOPIC = "telemetry/#"
-
-sys.path.append(os.path.abspath("cpp_normalizer"))  # Add C++ module path to sys.path
 
 async def listen():
     # Instantiate FSM ONCE outside the loop to prevent memory thrashing
