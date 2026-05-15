@@ -34,7 +34,7 @@ ritech-iot-ingestion/
 Requires a `.env` file with at minimum `MONGO_URL` and Postgres credentials (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`).
 
 ```bash
-docker compose -f docker_compose.yaml up --build
+docker compose up --build
 ```
 
 Services:
