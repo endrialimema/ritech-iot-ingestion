@@ -16,7 +16,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -55,8 +55,6 @@ services:
     container_name: telemetry-subscriber
     restart: on-failure
     command: ["python", "-u", "app/mqtt_subscriber.py"]
-    volumes:
-      - ./app:/app/app
     depends_on:
       mongo-raw-ingestion:
         condition: service_healthy
