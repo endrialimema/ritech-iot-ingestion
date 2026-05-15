@@ -13,6 +13,7 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./database/sql-migrations/V1_initial_schema.sql:/docker-entrypoint-initdb.d/01_V1_initial_schema.sql
       - ./database/sql-migrations/V2_create_partitions.sql:/docker-entrypoint-initdb.d/02_V2_create_partitions.sql
+      - ./database/sql-migrations/V3_seed_sensor_types.sql:/docker-entrypoint-initdb.d/03_V3_seed_sensor_types.sql
     networks:
       - backend
     healthcheck:
@@ -60,11 +61,14 @@ services:
         condition: service_healthy
       mosquitto-broker:
         condition: service_started
+      postgres-analytics:
+        condition: service_healthy
     env_file:
       - .env
     environment:
       PYTHONPATH: /app
       MQTT_BROKER: mosquitto-broker
+      POSTGRES_HOST: postgres-analytics
     networks:
       - backend
   
