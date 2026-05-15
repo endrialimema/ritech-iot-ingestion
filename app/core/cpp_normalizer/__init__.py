@@ -1,1 +1,1 @@
-from cpp_normalizer import *
+from .cpp_normalizer import *

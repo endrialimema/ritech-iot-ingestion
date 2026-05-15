@@ -8,9 +8,11 @@ def get_client():
     global _client
 
     if _client is None:
-        mongo_url = os.environ["MONGO_URL"]
+        mongo_url = os.environ.get("MONGO_URL")
+        if not mongo_url:
+            raise RuntimeError("MONGO_URL environment variable is required but not set")
         _client = AsyncIOMotorClient(mongo_url)
-    
+
     return _client
 
 

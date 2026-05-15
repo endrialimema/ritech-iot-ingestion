@@ -5,72 +5,69 @@ from datetime import datetime, timezone
 class TelemetryFSM:
     def __init__(self):
         self.state = "RECEIVED"
-    
+
 
     def logs(self, event, reason, payload_raw):
-        device_id=None
+        device_id = None
         try:
             if payload_raw:
-             data = json.loads(payload_raw)
-             device_id = data.get("device_id")
-        except:
-            pass        
+                data = json.loads(payload_raw)
+                device_id = data.get("device_id")
+        except Exception:
+            pass
 
         print({
-        "event": event,
-        "reason": reason,
-        "device_id": device_id,
-        "timestamp": datetime.now(timezone.utc).isoformat()
+            "event": event,
+            "reason": reason,
+            "device_id": device_id,
+            "timestamp": datetime.now(timezone.utc).isoformat()
         })
 
 
     def process(self, payload_raw):
-     
-     data = self.parse(payload_raw)
-     if not data:
-        self.state = "REJECTED"
-        self.logs("REJECTED", "PARSE_FAILED", payload_raw)
-        return None
+        self.state = "RECEIVED"
 
-     obj = TelemetryFactory.create(
-        data.get("sensor_type"),
-        data.get("device_id"),
-        data.get("value")
-     )
+        data = self.parse(payload_raw)
+        if not data:
+            self.state = "REJECTED"
+            self.logs("REJECTED", "PARSE_FAILED", payload_raw)
+            return None
 
-     print("FSM result:", obj)
+        obj = TelemetryFactory.create(
+            data.get("sensor_type"),
+            data.get("device_id"),
+            data.get("value")
+        )
 
-     if not obj:
-        self.state = "REJECTED"
-        self.logs("REJECTED", "FACTORY_FAILED", payload_raw)
-        return None
+        print("FSM result:", obj)
 
-     if not obj.validate():
-        self.state = "REJECTED"
-        self.logs("REJECTED", "VALIDATION_FAILED", payload_raw)
-        return None
-     
-     self.state = "ACCEPTED"
-     self.logs("ACCEPTED", "SUCCESS", payload_raw)
-     return obj
+        if not obj:
+            self.state = "REJECTED"
+            self.logs("REJECTED", "FACTORY_FAILED", payload_raw)
+            return None
+
+        if not obj.validate():
+            self.state = "REJECTED"
+            self.logs("REJECTED", "VALIDATION_FAILED", payload_raw)
+            return None
+
+        self.state = "ACCEPTED"
+        self.logs("ACCEPTED", "SUCCESS", payload_raw)
+        return obj
 
     def parse(self, payload_raw):
         try:
             if not isinstance(payload_raw, str):
-                return self.logs("REJECTED", "INVALID_PAYLOAD_TYPE", payload_raw)
+                self.logs("REJECTED", "INVALID_PAYLOAD_TYPE", payload_raw)
+                return None
             data = json.loads(payload_raw)
             if not isinstance(data, dict):
-                return self.logs("REJECTED", "INVALID_PAYLOAD_STRUCTURE", payload_raw)
-            
+                self.logs("REJECTED", "INVALID_PAYLOAD_STRUCTURE", payload_raw)
+                return None
+
             self.state = "PARSED"
             return data
-        
-        except json.JSONDecodeError:
-            return self.logs("REJECTED", "INVALID_JSON_FORMAT", payload_raw)
 
-        
-    def accept(self):
-        if self.state == "VALIDATED":
-            self.state = "ACCEPTED"
-            return True
-        return False
+        except json.JSONDecodeError:
+            self.logs("REJECTED", "INVALID_JSON_FORMAT", payload_raw)
+            return None

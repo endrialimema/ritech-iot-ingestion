@@ -1,6 +1,7 @@
 # environment files
 .env
 .env.*
+!.env.example
 
 # python cache
 __pycache__/
@@ -12,6 +13,7 @@ build/
 dist/
 *.so
 *.pyd
+.vscode
 
 # docker
 *.log

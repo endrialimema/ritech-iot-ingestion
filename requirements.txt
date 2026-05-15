@@ -6,3 +6,4 @@ aiomqtt
 python-dotenv
 yappi
 pybind11
+asyncpg
