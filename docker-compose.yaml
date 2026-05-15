@@ -84,6 +84,36 @@ services:
     networks:
     - backend
 
+  api:
+    build: .
+    container_name: ritech_api
+    restart: on-failure
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+      mongo-raw-ingestion:
+        condition: service_healthy
+      postgres-analytics:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app
+      POSTGRES_HOST: postgres-analytics
+    networks:
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: ritech_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - backend
+
 volumes:
   pgdata:
   mongodata:

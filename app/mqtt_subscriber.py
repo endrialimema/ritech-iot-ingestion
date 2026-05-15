@@ -40,7 +40,7 @@ async def write_to_postgres(pg_pool, obj, sensor_type_ids: dict, seen_devices: s
     await pg_pool.execute(
         "INSERT INTO iot.telemetry_data (ts, device_id, sensor_type_id, reading_value)"
         " VALUES ($1, $2, $3, $4)",
-        ts, device_id, sensor_type_id, float(obj.get_value()),
+        ts.replace(tzinfo=None), device_id, sensor_type_id, float(obj.get_value()),
     )
 
 
