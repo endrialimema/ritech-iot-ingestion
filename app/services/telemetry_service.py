@@ -1,22 +1,17 @@
 from datetime import datetime, timedelta
 from ..db.mongodb import db
 
-
 BUCKET_SIZE_SECONDS = 60
-
 
 def get_bucket_time(now: datetime):
     bucket_start = now.replace(second=0, microsecond=0)
     bucket_end = bucket_start + timedelta(seconds=BUCKET_SIZE_SECONDS)
     return bucket_start, bucket_end
 
-
 async def create_telemetry(data):
 
     print("INSERT CALLED", data.dict())
-
     MAX_BUCKET_SIZE = 5
-
     now = datetime.utcnow()
     bucket_start, bucket_end = get_bucket_time(now)
 
