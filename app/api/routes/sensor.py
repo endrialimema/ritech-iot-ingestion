@@ -2,8 +2,6 @@ from fastapi import APIRouter
 
 from app.schemas.sensor import SensorCreate, SensorResponse
 
-print("SENSOR ROUTE LOADED")
-
 router = APIRouter(tags=["Sensors"])
 
 @router.post("/", response_model=SensorResponse)
