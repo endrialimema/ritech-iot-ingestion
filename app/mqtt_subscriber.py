@@ -65,26 +65,35 @@ async def listen():
 
                 ts = datetime.now(timezone.utc)
 
-                document = {
+                result = await db.telemetry.insert_one({
                     "device_id": obj.get_device_id(),
                     "arrival_timestamp": ts,
                     "protocol": "MQTT",
                     "raw_payload": {
                         "value type": obj.get_sensor_type(),
                         "value": obj.get_value(),
-                        "normalized": obj.normalize()
+                        "normalized": obj.normalize(),
                     },
                     "validation_status": "accepted"
-                }
+                })
 
-                await db.telemetry.insert_one(document)
+                doc_id = result.inserted_id
+                print(f"Inserted document with ID: {doc_id}")
 
-                try:
+                try:                    
                     await write_to_postgres(pg_pool, obj, sensor_type_ids, seen_devices, ts)
+                    await db.telemetry.update_one(
+                        {"_id": doc_id},
+                        {"$set": {"validation_status": "accepted"}},
+                    )
                 except Exception:
                     import traceback
                     print("Postgres write failed:")
                     traceback.print_exc()
+                    await db.telemetry.update_one(
+                        {"_id": doc_id},
+                        {"$set": {"validation_status": "failed"}},
+                    )
 
                 print("Message_Count: ", message_count)
                 if message_count >= 500:
