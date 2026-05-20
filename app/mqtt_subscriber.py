@@ -10,16 +10,21 @@ from app.core.fsm import TelemetryFSM
 MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto-broker")
 MQTT_TOPIC = "telemetry/#"
 
+
 async def load_sensor_type_ids(pg_pool) -> dict:
     rows = await pg_pool.fetch("SELECT sensor_type_id, sensor_name FROM iot.sensor_types")
     return {row["sensor_name"]: row["sensor_type_id"] for row in rows}
+
 
 async def ensure_device(pg_pool, device_id: str, seen: set):
     if device_id not in seen:
         await pg_pool.execute(
             "INSERT INTO iot.devices (device_id, status) VALUES ($1, 'active')"
-            " ON CONFLICT (device_id) DO NOTHING", device_id,)
+            " ON CONFLICT (device_id) DO NOTHING",
+            device_id,
+        )
         seen.add(device_id)
+
 
 async def write_to_postgres(pg_pool, obj, sensor_type_ids: dict, seen_devices: set, ts: datetime):
     device_id = obj.get_device_id()
@@ -34,7 +39,10 @@ async def write_to_postgres(pg_pool, obj, sensor_type_ids: dict, seen_devices: s
 
     await pg_pool.execute(
         "INSERT INTO iot.telemetry_data (ts, device_id, sensor_type_id, reading_value)"
-        " VALUES ($1, $2, $3, $4)",  ts.replace(tzinfo=None), device_id, sensor_type_id, float(obj.get_value()),)
+        " VALUES ($1, $2, $3, $4)",
+        ts.replace(tzinfo=None), device_id, sensor_type_id, float(obj.get_value()),
+    )
+
 
 async def listen():
     print("Subscriber started")
@@ -65,26 +73,35 @@ async def listen():
 
                 ts = datetime.now(timezone.utc)
 
-                document = {
+                # Step 1: write to MongoDB as pending buffer
+                result = await db.telemetry.insert_one({
                     "device_id": obj.get_device_id(),
                     "arrival_timestamp": ts,
                     "protocol": "MQTT",
                     "raw_payload": {
                         "value type": obj.get_sensor_type(),
                         "value": obj.get_value(),
-                        "normalized": obj.normalize()
+                        "normalized": obj.normalize(),
                     },
-                    "validation_status": "accepted"
-                }
+                    "validation_status": "pending",
+                })
+                doc_id = result.inserted_id
 
-                await db.telemetry.insert_one(document)
-
+                # Step 2 + 3: write to Postgres, then update MongoDB status
                 try:
                     await write_to_postgres(pg_pool, obj, sensor_type_ids, seen_devices, ts)
+                    await db.telemetry.update_one(
+                        {"_id": doc_id},
+                        {"$set": {"validation_status": "accepted"}},
+                    )
                 except Exception:
                     import traceback
-                    print("Postgres write failed:")
+                    print("Postgres write failed — message kept as pending in MongoDB:")
                     traceback.print_exc()
+                    await db.telemetry.update_one(
+                        {"_id": doc_id},
+                        {"$set": {"validation_status": "failed"}},
+                    )
 
                 print("Message_Count: ", message_count)
                 if message_count >= 500:
@@ -106,6 +123,7 @@ async def listen():
         stats.sort("tsub")
         print("\n===== CPU PROFILING RESULTS =====")
         stats.print_top(20)
+
 
 if __name__ == "__main__":
     asyncio.run(listen())
