@@ -7,15 +7,13 @@ router = APIRouter()
 
 @router.get("/")
 async def get_stats():
-    total = await db.telemetry.count_documents({})
-
-    pipeline = [{"$group": {"_id": "$raw_payload.value type", "count": {"$sum": 1}}}]
-    by_type_raw = await db.telemetry.aggregate(pipeline).to_list(None)
+    total = await db.telemetry.count_documents({}) # total number of documents in mongodb
+    pipeline = [{"$group": {"_id": "$raw_payload.value type", "count": {"$sum": 1}}}] # group documents by sensor type and count how many
+    by_type_raw = await db.telemetry.aggregate(pipeline).to_list(None) 
     by_type = {row["_id"]: row["count"] for row in by_type_raw if row["_id"]}
 
     device_count = len(await db.telemetry.distinct("device_id"))
 
-    pg_total = 0
     try:
         pool = await get_pool()
         pg_total = await pool.fetchval("SELECT COUNT(*) FROM iot.telemetry_data") or 0

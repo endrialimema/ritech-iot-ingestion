@@ -4,14 +4,14 @@ import os
 _pool = None
 
 
-async def get_pool() -> asyncpg.Pool:
+async def get_pool() -> asyncpg.Pool: # returns a PostgreSQL connection pool
     global _pool
     if _pool is None:
         for var in ("POSTGRES_HOST", "POSTGRES_USER", "POSTGRES_PASSWORD", "POSTGRES_DB"):
             if not os.environ.get(var):
                 raise RuntimeError(f"{var} environment variable is required but not set")
 
-        _pool = await asyncpg.create_pool(
+        _pool = await asyncpg.create_pool( # It creates a pool of reusable DB connections.
             host=os.environ["POSTGRES_HOST"],
             user=os.environ["POSTGRES_USER"],
             password=os.environ["POSTGRES_PASSWORD"],
