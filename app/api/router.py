@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from .routes import telemetry, sensor, stats
+from .routes import sensor, stats
 
 api_router = APIRouter()
 
