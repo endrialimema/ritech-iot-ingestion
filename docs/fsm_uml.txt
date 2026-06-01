@@ -3,10 +3,9 @@
 [*] --> RECEIVED
 
 RECEIVED --> PARSED : parse_success
-RECEIVED --> REJECTED : parse_fail
 
 PARSED --> VALIDATING : factory_success
-PARSED --> REJECTED : factory_fail
+PARSED --> REJECTED : parse_fail / factory_fail
 
 VALIDATING --> ACCEPTED : validation_success
 VALIDATING --> REJECTED : validation_fail
