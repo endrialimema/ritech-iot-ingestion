@@ -53,42 +53,73 @@ The system is fully containerized using Docker Compose and designed for high-thr
 ``` text
 ritech-iot-ingestion/
 │
+├── .vscode/
+│   └── settings.json
+│
 ├── app/
-│    ├── mqtt_subscriber.py
-│    ├── main.py
-│    │
-│    ├── core/
-│    │    ├── fsm.py
-│    │    ├── middleware.py
-│    │    ├── rate_limiter.py
-│    │    ├── payloads/
-│    │         ├── base.py
-│    │         ├── temperature.py
-│    │         ├── humidity.py
-│    │         ├── pressure.py
-│    │          └── factory.py
-│    │
-│    └── cpp_normalizer/
-│            ├── bindings.cpp
-│            ├── setup.py
-│            ├── normalizer.cpp
-│  
-├── publisher/
-│      ├── publisher.py
-│      ├── Dockerfile
-│      ├── requirements.txt
+│   │
+│   ├── api/
+│   │   └── routes/
+│   │       ├── __init__.py
+│   │       ├── sensor.py
+│   │       ├── stats.py
+│   │       └── router.py
+│   │
+│   ├── core/
+│   │   ├── cpp_normalizer/
+│   │   │   ├── __init__.py
+│   │   │   ├── bindings.cpp
+│   │   │   └── setup.py
+│   │   │
+│   │   ├── payloads/
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py
+│   │   │   ├── factory.py
+│   │   │   ├── humidity.py
+│   │   │   ├── pressure.py
+│   │   │   ├── registry.py
+│   │   │   └── temperature.py
+│   │   │
+│   │   ├── __init__.py
+│   │   ├── fsm.py
+│   │   ├── middleware.py
+│   │   └── rate_limiter.py
+│   │
+│   ├── db/
+│   │   ├── mongodb.py
+│   │   └── postgres.py
+│   │
+│   ├── schemas/
+│   │   └── sensor.py
+│   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── stats_service.py
+│   │
+│   ├── main.py
+│   └── mqtt_subscriber.py
 │
 ├── database/
-│   ├── sql-migrations 
-│   │        ├─ V1_initial_shcema.sql
-│   │        └─ V2_create_partitions.sql
-│   └── nosql-schemas/      
-│        └── raw_payload_schema.json    
+│   │
+│   ├── nosql-schemas/
+│   │   └── raw_payload_schema.json
+│   │
+│   └── sql-migrations/
+│       ├── V1_initial_schema.sql
+│       ├── V2_create_partitions.sql
+│       ├── V3_seed_sensor_types.sql
+│       └── verify_schema.psql
 │
+├── publisher/
+│   ├── Dockerfile
+│   ├── publisher.py
+│   └── requirements.txt
 │
+├── .env
 ├── docker-compose.yaml
 ├── Dockerfile
-├── requirements.txt
+├── README.md
+└── requirements.txt
 
 ```
 ---
